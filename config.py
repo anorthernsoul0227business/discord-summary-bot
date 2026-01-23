@@ -10,9 +10,10 @@ load_dotenv()
 class Config:
     """アプリケーション設定"""
 
-    # Discord Bot設定
-    DISCORD_BOT_TOKEN: str = os.getenv("DISCORD_BOT_TOKEN", "")
-    DISCORD_CHANNEL_ID: int = int(os.getenv("DISCORD_CHANNEL_ID", "0"))
+    # Discord ブラウザ自動化設定
+    DISCORD_EMAIL: str = os.getenv("DISCORD_EMAIL", "")
+    DISCORD_PASSWORD: str = os.getenv("DISCORD_PASSWORD", "")
+    DISCORD_CHANNEL_URL: str = os.getenv("DISCORD_CHANNEL_URL", "")
 
     # Claude API設定
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
@@ -22,15 +23,21 @@ class Config:
     GMAIL_APP_PASSWORD: str = os.getenv("GMAIL_APP_PASSWORD", "")
     RECIPIENT_EMAIL: str = os.getenv("RECIPIENT_EMAIL", "")
 
+    # スケジュール設定
+    SCHEDULE_HOUR: int = int(os.getenv("SCHEDULE_HOUR", "9"))
+    SCHEDULE_MINUTE: int = int(os.getenv("SCHEDULE_MINUTE", "0"))
+
     @classmethod
     def validate(cls) -> List[str]:
         """設定の検証を行い、不足している項目のリストを返す"""
         missing = []
 
-        if not cls.DISCORD_BOT_TOKEN:
-            missing.append("DISCORD_BOT_TOKEN")
-        if not cls.DISCORD_CHANNEL_ID:
-            missing.append("DISCORD_CHANNEL_ID")
+        if not cls.DISCORD_EMAIL:
+            missing.append("DISCORD_EMAIL")
+        if not cls.DISCORD_PASSWORD:
+            missing.append("DISCORD_PASSWORD")
+        if not cls.DISCORD_CHANNEL_URL:
+            missing.append("DISCORD_CHANNEL_URL")
         if not cls.ANTHROPIC_API_KEY:
             missing.append("ANTHROPIC_API_KEY")
         if not cls.GMAIL_ADDRESS:

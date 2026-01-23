@@ -3,7 +3,7 @@ import asyncio
 from datetime import datetime
 
 from config import Config
-from discord_bot import DiscordMessageFetcher
+from discord_scraper import DiscordScraper
 from summarizer import Summarizer
 from email_sender import EmailSender
 
@@ -14,14 +14,14 @@ async def run_summary_job():
     print(f"ジョブ開始: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"{'='*50}")
 
-    fetcher = DiscordMessageFetcher()
+    scraper = DiscordScraper()
     summarizer = Summarizer()
     email_sender = EmailSender()
 
     try:
-        # 1. Discordからメッセージを取得
+        # 1. Discordからメッセージを取得（ブラウザ自動化）
         print("\n[1/3] Discordからメッセージを取得中...")
-        content = await fetcher.fetch_moshin_analysis()
+        content = await scraper.fetch_moshin_analysis()
 
         if not content:
             print("エラー: メッセージを取得できませんでした")
