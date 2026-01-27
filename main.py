@@ -5,7 +5,7 @@ from datetime import datetime
 from config import Config
 from discord_scraper import DiscordScraper
 from summarizer import Summarizer
-from email_sender import EmailSender
+from line_sender import LineSender
 
 
 async def run_summary_job():
@@ -16,7 +16,7 @@ async def run_summary_job():
 
     scraper = DiscordScraper()
     summarizer = Summarizer()
-    email_sender = EmailSender()
+    line_sender = LineSender()
 
     try:
         # 1. Discordからメッセージを取得（ブラウザ自動化）
@@ -34,14 +34,14 @@ async def run_summary_job():
         summary = summarizer.summarize(content)
         print(f"要約完了: {len(summary)}文字")
 
-        # 3. メールで送信
-        print("\n[3/3] メールを送信中...")
-        success = email_sender.send_summary(summary)
+        # 3. LINEで送信
+        print("\n[3/3] LINEに送信中...")
+        success = line_sender.send_summary(summary)
 
         if success:
-            print("\n完了: 要約メールを送信しました")
+            print("\n完了: 要約をLINEに送信しました")
         else:
-            print("\nエラー: メール送信に失敗しました")
+            print("\nエラー: LINE送信に失敗しました")
             return False
 
     except Exception as e:
@@ -71,7 +71,7 @@ def main():
         print("\n環境変数または.envファイルを確認してください。")
         exit(1)
 
-    print(f"送信先: {Config.RECIPIENT_EMAIL}")
+    print(f"送信先: LINE (User ID: {Config.LINE_USER_ID[:8]}...)")
     print("=" * 40)
 
     success = asyncio.run(run_summary_job())

@@ -18,10 +18,9 @@ class Config:
     # Claude API設定
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
 
-    # Gmail設定
-    GMAIL_ADDRESS: str = os.getenv("GMAIL_ADDRESS", "")
-    GMAIL_APP_PASSWORD: str = os.getenv("GMAIL_APP_PASSWORD", "")
-    RECIPIENT_EMAIL: str = os.getenv("RECIPIENT_EMAIL", "")
+    # LINE Messaging API設定
+    LINE_CHANNEL_ACCESS_TOKEN: str = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", "")
+    LINE_USER_ID: str = os.getenv("LINE_USER_ID", "")
 
     # スケジュール設定
     SCHEDULE_HOUR: int = int(os.getenv("SCHEDULE_HOUR", "9"))
@@ -40,11 +39,9 @@ class Config:
             missing.append("DISCORD_CHANNEL_URL")
         if not cls.ANTHROPIC_API_KEY:
             missing.append("ANTHROPIC_API_KEY")
-        if not cls.GMAIL_ADDRESS:
-            missing.append("GMAIL_ADDRESS")
-        if not cls.GMAIL_APP_PASSWORD:
-            missing.append("GMAIL_APP_PASSWORD")
-        if not cls.RECIPIENT_EMAIL:
-            missing.append("RECIPIENT_EMAIL")
+        if not cls.LINE_CHANNEL_ACCESS_TOKEN:
+            missing.append("LINE_CHANNEL_ACCESS_TOKEN")
+        if not cls.LINE_USER_ID:
+            missing.append("LINE_USER_ID")
 
         return missing
