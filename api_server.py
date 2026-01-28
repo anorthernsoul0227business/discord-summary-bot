@@ -1,6 +1,7 @@
 """FastAPI サーバー - iOSショートカットからのトリガー用"""
+import threading
+
 from fastapi import FastAPI, Header, HTTPException
-from fastapi.responses import JSONResponse
 
 from config import Config
 from discord_fetcher import DiscordFetcher
@@ -10,44 +11,41 @@ from line_sender import LineSender
 app = FastAPI(title="Discord Summary Bot API")
 
 
-@app.post("/trigger")
-def trigger_summary(x_api_key: str = Header(...)):
-    """要約ジョブを実行"""
-    if x_api_key != Config.API_SECRET_KEY:
-        raise HTTPException(status_code=401, detail="Invalid API key")
-
+def _run_summary_job():
+    """バックグラウンドで要約ジョブを実行"""
     try:
-        # 1. Discordからメッセージ取得
         fetcher = DiscordFetcher()
         content = fetcher.fetch_moshin_analysis()
 
         if not content:
-            return JSONResponse(
-                status_code=200,
-                content={"status": "no_messages", "message": "メッセージが見つかりませんでした"},
-            )
+            print("メッセージが見つかりませんでした")
+            return
 
-        # 2. Claude APIで要約
         summarizer = Summarizer()
         summary = summarizer.summarize(content)
 
-        # 3. LINEで送信
         line_sender = LineSender()
         success = line_sender.send_summary(summary)
 
         if success:
-            return {"status": "success", "message": "要約をLINEに送信しました", "summary_length": len(summary)}
+            print(f"要約をLINEに送信しました ({len(summary)}文字)")
         else:
-            return JSONResponse(
-                status_code=500,
-                content={"status": "error", "message": "LINE送信に失敗しました"},
-            )
+            print("LINE送信に失敗しました")
 
     except Exception as e:
-        return JSONResponse(
-            status_code=500,
-            content={"status": "error", "message": str(e)},
-        )
+        print(f"ジョブエラー: {e}")
+
+
+@app.post("/trigger")
+def trigger_summary(x_api_key: str = Header(...)):
+    """要約ジョブをトリガー（即座にレスポンスを返す）"""
+    if x_api_key != Config.API_SECRET_KEY:
+        raise HTTPException(status_code=401, detail="Invalid API key")
+
+    thread = threading.Thread(target=_run_summary_job)
+    thread.start()
+
+    return {"status": "accepted", "message": "要約ジョブを開始しました。完了後LINEに送信されます。"}
 
 
 @app.get("/health")
