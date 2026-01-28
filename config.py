@@ -10,9 +10,8 @@ load_dotenv()
 class Config:
     """アプリケーション設定"""
 
-    # Discord ブラウザ自動化設定
-    DISCORD_EMAIL: str = os.getenv("DISCORD_EMAIL", "")
-    DISCORD_PASSWORD: str = os.getenv("DISCORD_PASSWORD", "")
+    # Discord API設定（ユーザートークン方式）
+    DISCORD_TOKEN: str = os.getenv("DISCORD_TOKEN", "")
     DISCORD_CHANNEL_URL: str = os.getenv("DISCORD_CHANNEL_URL", "")
 
     # Claude API設定
@@ -22,19 +21,16 @@ class Config:
     LINE_CHANNEL_ACCESS_TOKEN: str = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", "")
     LINE_USER_ID: str = os.getenv("LINE_USER_ID", "")
 
-    # スケジュール設定
-    SCHEDULE_HOUR: int = int(os.getenv("SCHEDULE_HOUR", "9"))
-    SCHEDULE_MINUTE: int = int(os.getenv("SCHEDULE_MINUTE", "0"))
+    # APIサーバー認証設定
+    API_SECRET_KEY: str = os.getenv("API_SECRET_KEY", "")
 
     @classmethod
     def validate(cls) -> List[str]:
         """設定の検証を行い、不足している項目のリストを返す"""
         missing = []
 
-        if not cls.DISCORD_EMAIL:
-            missing.append("DISCORD_EMAIL")
-        if not cls.DISCORD_PASSWORD:
-            missing.append("DISCORD_PASSWORD")
+        if not cls.DISCORD_TOKEN:
+            missing.append("DISCORD_TOKEN")
         if not cls.DISCORD_CHANNEL_URL:
             missing.append("DISCORD_CHANNEL_URL")
         if not cls.ANTHROPIC_API_KEY:

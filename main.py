@@ -1,27 +1,26 @@
 """Discord moshin朝分析 自動要約Bot メインスクリプト"""
-import asyncio
 from datetime import datetime
 
 from config import Config
-from discord_scraper import DiscordScraper
+from discord_fetcher import DiscordFetcher
 from summarizer import Summarizer
 from line_sender import LineSender
 
 
-async def run_summary_job():
-    """メッセージ取得→要約→メール送信のジョブ"""
+def run_summary_job():
+    """メッセージ取得→要約→LINE送信のジョブ"""
     print(f"\n{'='*50}")
     print(f"ジョブ開始: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"{'='*50}")
 
-    scraper = DiscordScraper()
+    fetcher = DiscordFetcher()
     summarizer = Summarizer()
     line_sender = LineSender()
 
     try:
-        # 1. Discordからメッセージを取得（ブラウザ自動化）
+        # 1. Discordからメッセージを取得（API経由）
         print("\n[1/3] Discordからメッセージを取得中...")
-        content = await scraper.fetch_moshin_analysis()
+        content = fetcher.fetch_moshin_analysis()
 
         if not content:
             print("エラー: メッセージを取得できませんでした")
@@ -74,7 +73,7 @@ def main():
     print(f"送信先: LINE (User ID: {Config.LINE_USER_ID[:8]}...)")
     print("=" * 40)
 
-    success = asyncio.run(run_summary_job())
+    success = run_summary_job()
     exit(0 if success else 1)
 
 

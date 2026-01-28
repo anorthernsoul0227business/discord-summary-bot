@@ -23,16 +23,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Install Playwright browsers
-        run: playwright install chromium
-
       - name: Run summary job
         env:
-          DISCORD_EMAIL: ${{ secrets.DISCORD_EMAIL }}
-          DISCORD_PASSWORD: ${{ secrets.DISCORD_PASSWORD }}
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           DISCORD_CHANNEL_URL: ${{ secrets.DISCORD_CHANNEL_URL }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
         run: python main.py
